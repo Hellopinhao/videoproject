@@ -1,0 +1,435 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock%}
+{% block content %}
+<h2 align="center"; style="color:blue;">视频类型选择</h2>
+<hr>
+<p1 id="g2only" style="font-size: 20px;" hidden>请再次选择您最想要观看的 3 类视频。</p1>
+<p1 id="general" style="font-size: 20px;">在阅读风险提示之后，我们邀请您再次选择您想要观看的三类视频。</p1>
+<ul style="font-size: 20px;">
+  <li>请<strong>拖动滑块</strong>在下列15种视频类型中选择您最想要观看的<strong>三类视频</strong>，并依据您的喜好程度为这三类视频<strong>赋予不同的偏好值</strong>。</li>
+  <li>如果您想要观看相同类型的视频，请选择与上一轮一样的视频类型。如果您想要探索多样化的视频内容，请拖动滑块选择其他类型视频。</li>
+  <li>一旦您选择的视频类型数量达到3，滑块将会自动锁定。若您想要改变您的选择，请点击<strong>“重置”</strong>按钮重新选择</li>
+  <li>当您拖动滑块时，视频类型旁的数字将会随之变动，该数字表示您对相应视频类型的喜爱程度</li>
+  <li>数值越高，该平台推荐某一类型视频的可能性越大</li>
+</ul>
+<!--<ul style="font-size: 25px;">-->
+<!--  <li>Please rate Top 3 categories of videos that you prefer to watch in the following 15 short videos categories by <strong>dragging exactly 3 score bars from 0 to 10.</strong></li>-->
+<!--  <li>If you would like to watch videos in the same categories, please choose the same categories as before. If you prefer to explore a more diverse range of videos, feel free to select any other categories.</li>-->
+<!--  <li>If you would like to change your preference when the bars are locked, please click the reset button.</li>-->
+<!--  <li>The number on the <strong>right</strong> will change as you drag the bar, indicating <strong>your preference score.</strong></li>-->
+<!--  <li>The higher the score, the more likely the platform will recommend videos in certain category.</li>-->
+<!--</ul>-->
+<hr>
+<button style="width:100px;height:50px;" onclick="resetRange()">重置</button>
+<hr>
+<form  method="post" action="/pref/10/1">
+<div class="slidecontainer">
+  <label for="range1" class="label_cat">日常生活记录（vlog）:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value1" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value="0" class="slider" id="range1" name="range1" >
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range2" class="label_cat">服装穿搭:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value2" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value="0" class="slider" id="range2" name="range2">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range3" class="label_cat">健身锻炼:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value3" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value="0" class="slider" id="range3" name="range3">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range4" class="label_cat">美食烹饪:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value4" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range4" name="range4">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range5" class="label_cat">发型:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value5" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range5" name="range5">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range6" class="label_cat">自制饮料:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value6" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range6" name="range6">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range7" class="label_cat">孩童:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value7" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range7" name="range7">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range8" class="label_cat">音乐现场:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value8" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range8" name="range8">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range9" class="label_cat">化妆:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value9" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range9" name="range9">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range10" class="label_cat">绘画:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value10" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range10" name="range10">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range11" class="label_cat">宠物:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value11" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range11" name="range11">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range12" class="label_cat">摄影摄像:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value12" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range12" name="range12">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range13" class="label_cat">科学知识:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value13" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range13" name="range13">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range14" class="label_cat">自然风光:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value14" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range14" name="range14">
+  <label for="range1" >推荐---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range15" class="label_cat">街拍:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value15" style="font-weight: bold;"></span></label>
+  <label for="range1" >不要推荐---0</label>
+  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range15" name="range15">
+  <label for="range1" >推荐---10</label>
+</div>
+
+<hr>
+  <div style="text-align: center;">
+  <!-- <button class="btn btn-primary btn-lg" onclick="calTime()" type="submit">Submit</button> -->
+  <button class="btn btn-primary btn-lg" onclick="calTime()" type="submit">提交</button>
+  </div>
+<!--<div class="slidecontainer">-->
+<!--  <label for="range1" class="label_cat">Daily vlog:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value1" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value="0" class="slider" id="range1" name="range1" >-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range2" class="label_cat">Dressing:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value2" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value="0" class="slider" id="range2" name="range2">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range3" class="label_cat">Fitness:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value3" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value="0" class="slider" id="range3" name="range3">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range4" class="label_cat">Gourmet:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value4" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range4" name="range4">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range5" class="label_cat">Hair braided:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value5" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range5" name="range5">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range6" class="label_cat">Homemade drinks:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value6" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range6" name="range6">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range7" class="label_cat">Kids:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value7" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range7" name="range7">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range8" class="label_cat">Livehouse:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value8" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range8" name="range8">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range9" class="label_cat">Makeup:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value9" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range9" name="range9">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range10" class="label_cat">Painting:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value10" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range10" name="range10">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range11" class="label_cat">Pets:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value11" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range11" name="range11">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range12" class="label_cat">Photography:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value12" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range12" name="range12">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range13" class="label_cat">Popular science:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value13" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range13" name="range13">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range14" class="label_cat">Scenery:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value14" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range14" name="range14">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+<!--<hr>-->
+<!--<div class="slidecontainer">-->
+<!--  <label for="range15" class="label_cat">Street snap:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value15" style="font-weight: bold;"></span></label>-->
+<!--  <label for="range1" >don’t recommend---0</label>-->
+<!--  <input onmouseup="checkLock()" type="range" min="0" max="10" value ="0" class="slider" id="range15" name="range15">-->
+<!--  <label for="range1" >preferred---10</label>-->
+<!--</div>-->
+
+<!--<hr>-->
+<!--  <div style="text-align: center;">-->
+<!--  <button class="btn btn-primary btn-lg" onclick="calTime()" type="submit">Submit</button>-->
+<!--  </div>-->
+</form>
+<script>
+var slider1 = document.getElementById("range1");
+var output1 = document.getElementById("value1");
+output1.innerHTML = slider1.value;
+slider1.oninput = function() {
+  output1.innerHTML = this.value;
+}
+var slider2 = document.getElementById("range2");
+var output2 = document.getElementById("value2");
+output2.innerHTML = slider2.value;
+slider2.oninput = function() {
+  output2.innerHTML = this.value;
+}
+var slider3 = document.getElementById("range3");
+var output3 = document.getElementById("value3");
+output3.innerHTML = slider3.value;
+slider3.oninput = function() {
+  output3.innerHTML = this.value;
+}
+var slider4 = document.getElementById("range4");
+var output4 = document.getElementById("value4");
+output4.innerHTML = slider4.value;
+slider4.oninput = function() {
+  output4.innerHTML = this.value;
+}
+var slider5 = document.getElementById("range5");
+var output5 = document.getElementById("value5");
+output5.innerHTML = slider5.value;
+slider5.oninput = function() {
+  output5.innerHTML = this.value;
+}
+var slider6 = document.getElementById("range6");
+var output6 = document.getElementById("value6");
+output6.innerHTML = slider6.value;
+slider6.oninput = function() {
+  output6.innerHTML = this.value;
+}
+var slider7 = document.getElementById("range7");
+var output7 = document.getElementById("value7");
+output7.innerHTML = slider7.value;
+slider7.oninput = function() {
+  output7.innerHTML = this.value;
+}
+var slider8 = document.getElementById("range8");
+var output8 = document.getElementById("value8");
+output8.innerHTML = slider8.value;
+slider8.oninput = function() {
+  output8.innerHTML = this.value;
+}
+var slider9 = document.getElementById("range9");
+var output9 = document.getElementById("value9");
+output9.innerHTML = slider9.value;
+slider9.oninput = function() {
+  output9.innerHTML = this.value;
+}
+var slider10 = document.getElementById("range10");
+var output10 = document.getElementById("value10");
+output10.innerHTML = slider10.value;
+slider10.oninput = function() {
+  output10.innerHTML = this.value;
+}
+var slider11 = document.getElementById("range11");
+var output11 = document.getElementById("value11");
+output11.innerHTML = slider11.value;
+slider11.oninput = function() {
+  output11.innerHTML = this.value;
+}
+var slider12 = document.getElementById("range12");
+var output12 = document.getElementById("value12");
+output12.innerHTML = slider12.value;
+slider12.oninput = function() {
+  output12.innerHTML = this.value;
+}
+var slider13 = document.getElementById("range13");
+var output13 = document.getElementById("value13");
+output13.innerHTML = slider13.value;
+slider13.oninput = function() {
+  output13.innerHTML = this.value;
+}
+var slider14 = document.getElementById("range14");
+var output14 = document.getElementById("value14");
+output14.innerHTML = slider14.value;
+slider14.oninput = function() {
+  output14.innerHTML = this.value;
+}
+var slider15 = document.getElementById("range15");
+var output15 = document.getElementById("value15");
+output15.innerHTML = slider15.value;
+slider15.oninput = function() {
+  output15.innerHTML = this.value;
+}
+
+</script>
+<script>
+    var pay_load;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/ready');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    pay_load = {"id": '{{video_id}}', "status" : "pageReady", "time": Date.now(), "page" : "pre"};
+    xhr.send(JSON.stringify(pay_load));
+    xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        console.log(xhr.status);
+        console.log(xhr.responseText);
+      }
+      };
+    </script>
+<script>
+    function calTime(){
+    var counter = 0;
+    for (let i = 1; i < 16; i++) {
+      var spec_id = "range" + String(i);
+      var spec_num = document.getElementById(spec_id).value;
+      var spec_num = parseInt(spec_num);
+      if (spec_num > 0){
+          counter += 1;
+      }
+    }
+    if (counter < 3){
+      alert("Please indicate your preferences for at least 3 categories!")
+      event.preventDefault();
+      returnToPreviousPage();
+      return false;
+    }
+    for (let i = 1; i < 16; i++) {
+        var spec_id = "range" + String(i);
+        document.getElementById(spec_id).disabled = false;
+      }
+    var pay_load;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/ready');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    pay_load = {"id": '{{video_id}}', "status" : "end", "time": Date.now(), "page" : "pre"};
+    xhr.send(JSON.stringify(pay_load));
+    xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        console.log(xhr.status);
+        console.log(xhr.responseText);
+      }
+      };
+    }
+
+    function checkLock(){
+    var counter = 0;
+    for (let i = 1; i < 16; i++) {
+      var spec_id = "range" + String(i);
+      var spec_num = document.getElementById(spec_id).value;
+      var spec_num = parseInt(spec_num);
+      if (spec_num > 0){
+          counter += 1;
+      }
+    }
+    if (counter == 3){
+      for (let i = 1; i < 16; i++) {
+      var spec_id = "range" + String(i);
+      document.getElementById(spec_id).disabled = true;
+      }
+      var elements = document.getElementsByClassName("slidecontainer");
+      for (var i = 0; i < elements.length; i++) {
+        elements[i].style.backgroundColor="grey";
+        elements[i].style.opacity=0.5;
+      }
+    }
+
+    }
+
+    function resetRange(){
+      for (let i = 1; i < 16; i++) {
+        var spec_id = "range" + String(i);
+        document.getElementById(spec_id).value = 0;
+        var value_id = "value" + String(i);
+        document.getElementById(value_id).innerHTML = 0;
+        document.getElementById(spec_id).disabled = false;
+      }
+      var elements = document.getElementsByClassName("slidecontainer");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].style.backgroundColor="white";
+          elements[i].style.opacity=1;
+        }
+
+    }
+    </script>
+<script>
+  if ( {{grp}} == "2" ){
+    document.getElementById("g2only").removeAttribute("hidden");
+    document.getElementById("general").style.display = 'none';
+  }
+</script>
+{% endblock%}
+

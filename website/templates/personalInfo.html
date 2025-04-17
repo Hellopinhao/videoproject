@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Personal Information{% endblock%}
+{% block content %}
+<h2 align="center">Personal Information</h2>
+<hr>
+<p1 style="font-size: 25px;">Please enter your personal information:</p1>
+<br>
+<br>
+<form method="post" action="/personalInfo">
+<div>
+    <label>Age:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+    <input type="text" name="age" placeholder="Please enter your age"/>
+</div>
+<br>
+<div>
+    <label>Gender:&nbsp;&nbsp;</label>
+    <input type="radio" name="gender" value="Male"> Male&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="radio" name="gender" value="Female"> Female
+</div>
+<br>
+<div>
+<label>How long do you usually spend on Douyin every day?</label>
+<br>
+<input type="radio" name="duration" value="<30m">&nbsp;&nbsp;< 30 mins &nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="duration" value="30m-1h">&nbsp;&nbsp; 30 mins - 1h &nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="duration" value="1h-2h">&nbsp;&nbsp; 1h - 2h &nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="duration" value="2h-3h">&nbsp;&nbsp; 2h - 3h &nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="duration" value=">3h">&nbsp;&nbsp; > 3h
+</div>
+<br>
+<button class="btn btn-primary" type="submit">Submit</button>
+</form>
+{% endblock%}

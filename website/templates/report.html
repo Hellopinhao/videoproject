@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock%}
+{% block content %}
+<form method="POST">
+    <h3 align="center">Your Personalized Report</h3>
+    <div class="blue-rectangle" id="viewingTitle" hidden>
+                <p>Viewing Report</p>
+    </div>
+    <div class="form-group" id="generalReport" hidden>
+        <label>You have spent a total of {{tot_min}} minutes watching short videos, with <b>{{cat1_per}}%</b> of that time allocated to <b>{{cat1}}</b> videos, <b>{{cat2_per}}%</b> to <b>{{cat2}}</b>, and <b>{{cat3_per}}%</b> to <b>{{cat3}}</b>.</label>
+        <div id="container"></div>
+        <script>
+        var cat1_name = '{{cat1}}' + '(' + '{{cat1_time}}' + 's)';
+        var cat2_name = '{{cat2}}' + '(' + '{{cat2_time}}' + 's)';
+        var cat3_name = '{{cat3}}' + '(' + '{{cat3_time}}' + 's)';
+        var cat1_time = Number('{{cat1_per}}');
+        var cat2_time = Number('{{cat2_per}}');
+        var cat3_time = Number('{{cat3_per}}');
+        var pie = new ej.charts.AccumulationChart({
+            //Initializing Series
+            series: [
+                {
+                    dataSource: [
+                        { 'x': cat1_name, y: cat1_time}, { 'x': cat2_name, y: cat2_time},
+                        { 'x': cat3_name, y: cat3_time}
+                    ],
+                    dataLabel: {
+                        visible: false,
+                        position: 'Inside',
+                    },
+                    xName: 'x',
+                    yName: 'y'
+                }
+            ],
+            tooltip: { enable: true, header: 'Percentage Duration', format: '${point.x}: <b> ${point.y}%<b>' },
+        });
+        pie.appendTo('#container');
+
+    </script>
+    </div>
+    <div id="tags" hidden>
+        <p>Here are the <strong>keywords</strong> for the videos you watch most frequently</p>
+        <ul style="font-size: 15px;">
+            <li>Top 1: <strong>{{w1}}</strong> </li>
+            <li>Top 2: <strong>{{w2}}</strong> </li>
+            <li>Top 3: <strong>{{w3}}</strong> </li>
+            <li>Top 4: <strong>{{w4}}</strong> </li>
+            <li>Top 5: <strong>{{w5}}</strong> </li>
+        </ul>
+    </div>
+    <br/>
+    <div id="reminderSec" hidden>
+        <div class="blue-rectangle">
+                <p>Risk Reminder</p>
+        </div>
+        <p1><span style="color:red;">!!</span>The system has detected that you have been viewing numerous videos with similar content. This prolonged exposure has been proven to reinforce individual cognitive biases and thinking limitations, and even lead to extreme thoughts and behaviors.
+Thus, we encourage you to explore a more diverse range of videos!</p1>
+    </div>
+    <br/>
+
+    <div class="blue-rectangle">
+                <p>Next Step</p>
+    </div>
+    <label>Please click the button to choose your preferences for the next round of videos.</label>
+    <br/>
+    <button type="submit" class="btn btn-primary" onclick="calTime()" id="cont">Continue</button>
+    <script>
+        if ('{{report_type}}' == "r1") {
+            document.getElementById("reminderSec").removeAttribute("hidden");
+        }
+        else if ('{{report_type}}' == "r3") {
+            document.getElementById("reminderSec").removeAttribute("hidden");
+            document.getElementById("viewingTitle").removeAttribute("hidden");
+            document.getElementById("generalReport").removeAttribute("hidden");
+        }
+        else if ('{{report_type}}' == "r4") {
+            document.getElementById("viewingTitle").removeAttribute("hidden");
+            document.getElementById("generalReport").removeAttribute("hidden");
+        }
+        else if ('{{report_type}}' == "r5") {
+            document.getElementById("reminderSec").removeAttribute("hidden");
+            document.getElementById("viewingTitle").removeAttribute("hidden");
+            document.getElementById("generalReport").removeAttribute("hidden");
+            document.getElementById("tags").removeAttribute("hidden");
+        }
+        else if ('{{report_type}}' == "r6") {
+            document.getElementById("viewingTitle").removeAttribute("hidden");
+            document.getElementById("generalReport").removeAttribute("hidden");
+            document.getElementById("tags").removeAttribute("hidden");
+        }
+        </script>
+    <script>
+    var pay_load;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/ready');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    pay_load = {"id": '{{video_id}}', "status" : "pageReady", "time": Date.now(), "page" : "report"};
+    xhr.send(JSON.stringify(pay_load));
+    xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        console.log(xhr.status);
+        console.log(xhr.responseText);
+      }
+      };
+    </script>
+    <script>
+        function calTime(){
+    var pay_load;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/ready');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    pay_load = {"id": '{{video_id}}', "status" : "end", "time": Date.now(), "page" : "report"};
+    xhr.send(JSON.stringify(pay_load));
+    xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        console.log(xhr.status);
+        console.log(xhr.responseText);
+      }
+      };
+    }
+    </script>
+</form>
+{% endblock%}

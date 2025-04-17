@@ -1,0 +1,26 @@
+
+{% extends "base.html" %}
+{% block title %}END{% endblock%}
+{% block content %}
+<br>
+<h1 >视频浏览结束</h1>
+<br>
+<br>
+<p1>感谢您耐心完成本次实验的视频观看环节! </p1>
+<br>
+<br>
+<p1>接下来，请您<strong>复制以下参与码并返回问卷页面将其粘贴至相应的位置</strong>。复制粘贴完成后请您<strong>完成问卷中剩余问题</strong>以结束此次实验。</p1>
+<br>
+<br>
+<h2 style="color:red;font-weight: bold;">{{code}}</h2>
+<br>
+<br>
+<button hidden id="myButton" class="btn btn-light btn-outline-primary" >继续</button>
+
+<script>
+    document.getElementById("myButton").onclick = function () {
+        window.open("https://www.cityu.edu.hk/questionpro/", '_blank');
+        calTime.call();
+    };
+</script>
+{% endblock%}

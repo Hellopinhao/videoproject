@@ -1,0 +1,20 @@
+{% extends "base_ch.html" %}
+{% block title %}Instructions{% endblock%}
+{% block content %}
+<div style="border:blue;">
+<h2 style="text-align: center">Instructions</h2>
+<hr>
+<p3>We will provide you with short video recommendations. You may watch them at your own will without any compulsion or limitation.</p3>
+<ul>
+  <li>Once you finish watching a video, you may click the "<strong>Next</strong>" button to proceed to the next one.</li>
+  <li>For each video, you can also skip it by clicking "Next" <strong>without finishing it.</strong></li>
+  <li>Kindly remember to <strong>rate</strong> each video based on your liking before moving on to the next one.</li>
+  <li>After watching the videos (<=15), you need to <strong>copy the given code</strong>, return to the<strong>original questionnaire link</strong> and <strong>paste it</strong>, then <strong>finish the questionnaire</strong>to complete this study.</li>
+</ul>
+<p3>Please do not refresh the page or go back to the previous one. In case you accidentally closed this page, please re-enter it.</p3>
+<br>
+<form method="post">
+<button type="submit" style="float: right;" class="btn btn-light btn-outline-primary">下一步</button>
+</form>
+</div>
+{% endblock%}

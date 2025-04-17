@@ -1,0 +1,23 @@
+
+{% extends "base_ch.html" %}
+{% block title %}END{% endblock%}
+{% block content %}
+<br>
+<h1 style="color:red;font-weight: bold;">视频观看结束</h1>
+<br>
+<p1>请复制下面的代码，关闭该页面，<strong>返回原调查页面</strong>粘贴该代码</p1>
+<br>
+<br>
+<h2>{{code}}</h2>
+<br>
+<p1>在粘贴并提交代码后，请继续<strong>完成关于视频浏览体验的问卷</strong></p1>
+<br>
+<br>
+<button hidden id="myButton" class="btn btn-light btn-outline-primary" >Continue</button>
+
+<script type="text/javascript">
+    document.getElementById("myButton").onclick = function () {
+        window.open("https://www.cityu.edu.hk/questionpro/", '_blank');
+    };
+</script>
+{% endblock%}

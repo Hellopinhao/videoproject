@@ -1,0 +1,211 @@
+{% extends "base_ch.html" %}
+{% block title %}Home{% endblock%}
+{% block content %}
+<p align="left" style="font-size: 30px;">请您给以下短视频类别<strong>按喜爱程度</strong>打分（0-10分），<strong>分数越高表示越喜欢</strong>，5分代表中立态度——不喜欢也不讨厌</p>
+<hr>
+<form  method="post" action="/">
+<div class="slidecontainer">
+  <label for="range1" class="label">日常vlog记录:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value1" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range1" name="range1" >
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range2" class="label">穿搭:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value2" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range2" name="range2">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range3" class="label">健身:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value3" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range3" name="range3">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range4" class="label">美食:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value4" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range4" name="range4">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range5" class="label">编头发:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value5" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range5" name="range5">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range6" class="label">手作饮品:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value6" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range6" name="range6">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range7" class="label">萌娃:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value7" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range7" name="range7">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range8" class="label">音乐现场:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value8" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range8" name="range8">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range9" class="label">化妆:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value9" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range9" name="range9">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range10" class="label">画画:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value10" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range10" name="range10">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range11" class="label">宠物:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value11" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range11" name="range11">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range12" class="label">摄影:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value12" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range12" name="range12">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range13" class="label">科普:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value13" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range13" name="range13">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range14" class="label">风景:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value14" style="font-weight: bold;"></span></label>
+  <label for="range1" >十分反感---0</label>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range14" name="range14">
+  <label for="range1" >非常喜欢---10</label>
+</div>
+<hr>
+<div class="slidecontainer">
+  <label for="range15" class="label">街拍:&nbsp;&nbsp;&nbsp;&nbsp;<span id="value15" style="font-weight: bold;"></span></label>
+  <span for="range1" >十分反感---0</span>
+  <input type="range" min="0" max="10" value="5" class="slider" id="range15" name="range15">
+  <span for="range1" >非常喜欢---10</span>
+</div>
+
+<hr>
+
+  <button class="btn btn-primary" type="submit">提交</button>
+</form>
+<script>
+var slider1 = document.getElementById("range1");
+var output1 = document.getElementById("value1");
+output1.innerHTML = slider1.value;
+slider1.oninput = function() {
+  output1.innerHTML = this.value;
+}
+var slider2 = document.getElementById("range2");
+var output2 = document.getElementById("value2");
+output2.innerHTML = slider2.value;
+slider2.oninput = function() {
+  output2.innerHTML = this.value;
+}
+var slider3 = document.getElementById("range3");
+var output3 = document.getElementById("value3");
+output3.innerHTML = slider3.value;
+slider3.oninput = function() {
+  output3.innerHTML = this.value;
+}
+var slider4 = document.getElementById("range4");
+var output4 = document.getElementById("value4");
+output4.innerHTML = slider4.value;
+slider4.oninput = function() {
+  output4.innerHTML = this.value;
+}
+var slider5 = document.getElementById("range5");
+var output5 = document.getElementById("value5");
+output5.innerHTML = slider5.value;
+slider5.oninput = function() {
+  output5.innerHTML = this.value;
+}
+var slider6 = document.getElementById("range6");
+var output6 = document.getElementById("value6");
+output6.innerHTML = slider6.value;
+slider6.oninput = function() {
+  output6.innerHTML = this.value;
+}
+var slider7 = document.getElementById("range7");
+var output7 = document.getElementById("value7");
+output7.innerHTML = slider7.value;
+slider7.oninput = function() {
+  output7.innerHTML = this.value;
+}
+var slider8 = document.getElementById("range8");
+var output8 = document.getElementById("value8");
+output8.innerHTML = slider8.value;
+slider8.oninput = function() {
+  output8.innerHTML = this.value;
+}
+var slider9 = document.getElementById("range9");
+var output9 = document.getElementById("value9");
+output9.innerHTML = slider9.value;
+slider9.oninput = function() {
+  output9.innerHTML = this.value;
+}
+var slider10 = document.getElementById("range10");
+var output10 = document.getElementById("value10");
+output10.innerHTML = slider10.value;
+slider10.oninput = function() {
+  output10.innerHTML = this.value;
+}
+var slider11 = document.getElementById("range11");
+var output11 = document.getElementById("value11");
+output11.innerHTML = slider11.value;
+slider11.oninput = function() {
+  output11.innerHTML = this.value;
+}
+var slider12 = document.getElementById("range12");
+var output12 = document.getElementById("value12");
+output12.innerHTML = slider12.value;
+slider12.oninput = function() {
+  output12.innerHTML = this.value;
+}
+var slider13 = document.getElementById("range13");
+var output13 = document.getElementById("value13");
+output13.innerHTML = slider13.value;
+slider13.oninput = function() {
+  output13.innerHTML = this.value;
+}
+var slider14 = document.getElementById("range14");
+var output14 = document.getElementById("value14");
+output14.innerHTML = slider14.value;
+slider14.oninput = function() {
+  output14.innerHTML = this.value;
+}
+var slider15 = document.getElementById("range15");
+var output15 = document.getElementById("value15");
+output15.innerHTML = slider15.value;
+slider15.oninput = function() {
+  output15.innerHTML = this.value;
+}
+
+</script>
+
+{% endblock%}
+

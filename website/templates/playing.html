@@ -1,0 +1,77 @@
+
+{% extends "base.html" %}
+{% block title %}Travel{% endblock%}
+{% block content %}
+
+<h1>{{title}}</h1>
+<iframe width="420" height="345" src="https://www.youtube.com/embed/tgbNymZ7vqY">
+</iframe>
+<br>
+
+<form  method="post" id = "like">
+<input hidden id="pst1" name="type"></input>
+    <input hidden id = "name1" name = "vname"></input>
+<button id = "like_btn" class="btn btn-primary" type="submit" onclick="like()">Like</button>
+</form>
+
+<br>
+<h3>Comments:</h3>
+<form method="post" >
+    <textarea rows="10" cols="100" name="comment"></textarea>
+    <input hidden id="pst2" name="type"></input>
+    <input hidden id = "name2" name = "vname"></input>
+    <br>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+<script>
+    var x = getFile();
+    var y = getName();
+    function getFile() {
+    var url = window.location.href;
+    var ind = url.indexOf("?");
+    var name = url.slice(ind+1);
+    return name
+    }
+    function getName() {
+    var url = window.location.href;
+    var ind = url.indexOf("?");
+    var name = url.slice(ind+1,-4);
+    return name
+    }
+    document.getElementById("name1").value = y;
+    document.getElementById("name2").value = y;
+    document.getElementById("pst1").value = 1;
+    document.getElementById("pst2").value = 2;
+    document.getElementById("v").src = "./static/" + x;
+</script>
+<script>
+    function like(){
+        document.getElementById("like_btn").innerHTML = "Liked";
+        window.alert("You liked the video");
+    }
+    function sub(){
+        alert("Your comments are submitted.");
+    }
+</script>
+
+<script type="text/javascript">
+    var interval = setInterval(function(){
+        player = document.getElementById("player");
+        var percentComplete = player.currentTime/player.duration;
+        var name = getName();
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", 'track');
+        xhr.setRequestHeader("Content-Type", "application/json");
+        var pay_load = {"pct": percentComplete, "name": name};
+        xhr.send(JSON.stringify(pay_load));
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+          }};
+    }, 1000);
+    setTimeout(function(){
+        clearInterval(interval);
+    },1000)
+</script>
+{% endblock%}

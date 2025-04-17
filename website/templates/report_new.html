@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock%}
+{% block content %}
+<head>
+    <!-- <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+
+            var data = google.visualization.arrayToDataTable([
+            ['Answer', 'Percentage'],
+            ["{{cat1}}",     {{cat1_time}}], //This static data needs to reflect dynamic data from html table
+            ["{{cat2}}",     {{cat2_time}}], //This static data needs to reflect dynamic data from html table
+            ["{{cat3}}",  {{cat3_time}}], //This static data needs to reflect dynamic data from html table
+            ]);
+
+            var options = {
+            title: '时间占比'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
+        }
+    </script> -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            var cat1 = "{{ cat1 }}";
+            var cat2 = "{{ cat2 }}";
+            var cat3 = "{{ cat3 }}";
+            var cat1_time = {{ cat1_time }};
+            var cat2_time = {{ cat2_time }};
+            var cat3_time = {{ cat3_time }};
+     
+            var chart = echarts.init(document.getElementById('piechart'));
+     
+            var option = {
+                title: {
+                    text: '时间占比',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'right',
+                    top: 'center',
+                    align: 'left'  // 让图例靠近饼图
+                },
+                series: [
+                    {
+                        name: '时间占比',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            { value: cat1_time, name: cat1 },
+                            { value: cat2_time, name: cat2 },
+                            { value: cat3_time, name: cat3 }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+     
+            chart.setOption(option);
+        };
+    </script>
+    
+</head>
+<h3 align="center">提示信息</h3>
+<form method="POST">
+    <div id="reminderSec" hidden>
+        <div class="blue-rectangle">
+                <p>⚠ 风险提醒</p>
+        </div>
+        <p1><span style="color:red;">!!!</span>系统检测到您已经浏览了大量同质化的视频内容。<br/>
+        长期暴露于同质化的信息被证实能够强化人们的认知偏差和思维局限，甚至会导致极端思想和极端行为。<br/>
+        为了避免此类风险，平台建议您探索更多样化的视频内容!</p1>
+    </div>
+    <br/>
+
+    <div class="blue-rectangle" id="viewingTitle" hidden>
+                <p>📗 您的视频观看报告</p>
+    </div>
+    <div class="form-group" id="generalReport" hidden>
+        <label>您共花费 {{tot_min}} 分 {{spe_seconds}} 秒观看短视频, 其中 <b>{{cat1_per}}%</b> 的时间用于观看 <b>{{cat1}}</b> 视频(共<strong>10</strong>个视频), <b>{{cat2_per}}%</b> 用于 <b>{{cat2}}</b>视频(共<strong>6</strong>个视频), <b>{{cat3_per}}%</b> 用于 <b>{{cat3}}</b>视频(共<strong>4</strong>个视频).</label>
+        <hr>
+        <div id="visChart" style="display: grid;grid-template-columns: 60% 40%;">
+           <div id="piechart" style="height: 350px;"></div>
+            <div id="tags" style="height: 350px; font-size: 15px;" hidden>
+            <p>以下是您最常观看的视频的 <strong>关键词</strong>：</p>
+            <div style="font-size: 15px;left:100px;">
+                <p >✦ <strong>{{w1}}</strong> </p>
+                <p>✦ <strong>{{w2}}</strong> </p>
+                <p>✦ <strong>{{w3}}</strong> </p>
+                <p>✦ <strong>{{w4}}</strong> </p>
+                <p>✦ <strong>{{w5}}</strong> </p>
+            </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+
+    <!--下面几行为修改-->
+    <div id="evidenceSec" hidden>
+        <div class="blue-rectangle">
+                <p>📄 信息茧房的危害-用户实例</p>
+        </div>
+        <p>“大家好，我是陈萍（化名），我想和大家分享我陷入信息茧房的故事。信息茧房与我们的距离远比我们想象得近。许多人像我一样，每天花费数个小时在短视频平台上，沉迷于完全依照我们的兴趣而定制的个性化内容。在这种情况下，我们很难意识到自身已经陷入算法构建的茧房之中。令人难以置信的是，我的抖音页面过去一年多展示的90%以上的内容都与我常常浏览的内容十分相似。我相信被同质化信息困住的不止我一人，我周围的许多朋友也都是同样的情况。</p>
+        <p>在意识到信息茧房风险后，我深刻体会到了信息茧房带来的严重后果。我们不仅浪费了大把的时间，同时我们的思想也会变得越来越偏激。更令人担忧的是，我们会对与我们不同的看法失去理解和了解的耐心。这种认知层面的隔离会引发越来越强烈的焦虑感和孤独感。受困于信息茧房的我们失去了与外界对话的机会。意识到信息茧房风险是极为关键的一步。我已经开始着手应对信息茧房，我相信均衡化和多样化的信息摄入在信息社会是极为重要的！”</p>
+    </div>
+    <br/>
+
+
+    <div class="blue-rectangle">
+                <p>下一步</p>
+    </div>
+    <div id="nextBtn">
+        <div id="nextTxt">
+        <label style="width: 40%;">浏览以上提示信息并点击“继续”按钮进行下一步!</label>
+        <span style="font-size: 30px;">☞ </span><button type="submit" class="btn btn-primary" onclick="calTime()" id="cont">继续</button>
+        </div>
+    </div>
+    <script>
+        if ('{{report_type}}' == "r1") {
+            document.getElementById("reminderSec").removeAttribute("hidden");
+        }
+        else if ('{{report_type}}' == "r3") {
+            document.getElementById("reminderSec").removeAttribute("hidden");
+            document.getElementById("viewingTitle").removeAttribute("hidden");
+            document.getElementById("generalReport").removeAttribute("hidden");
+        }
+        else if ('{{report_type}}' == "r4") {
+            // 下一行为修改
+            document.getElementById("reminderSec").removeAttribute("hidden");
+            // document.getElementById("viewingTitle").removeAttribute("hidden");
+            // document.getElementById("generalReport").removeAttribute("hidden");
+            // 下一行为修改
+            document.getElementById("evidenceSec").removeAttribute("hidden");
+        }
+        else if ('{{report_type}}' == "r5") {
+            document.getElementById("reminderSec").removeAttribute("hidden");
+            document.getElementById("viewingTitle").removeAttribute("hidden");
+            document.getElementById("generalReport").removeAttribute("hidden");
+            document.getElementById("tags").removeAttribute("hidden");
+        }
+        else if ('{{report_type}}' == "r6") {
+            document.getElementById("viewingTitle").removeAttribute("hidden");
+            document.getElementById("generalReport").removeAttribute("hidden");
+            document.getElementById("tags").removeAttribute("hidden");
+        }
+        </script>
+    <script>
+    var pay_load;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/ready');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    pay_load = {"id": '{{video_id}}', "status" : "pageReady", "time": Date.now(), "page" : "report"};
+    xhr.send(JSON.stringify(pay_load));
+    xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        console.log(xhr.status);
+        console.log(xhr.responseText);
+      }
+      };
+    </script>
+    <script>
+        function calTime(){
+    var pay_load;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/ready');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    pay_load = {"id": '{{video_id}}', "status" : "end", "time": Date.now(), "page" : "report"};
+    xhr.send(JSON.stringify(pay_load));
+    xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        console.log(xhr.status);
+        console.log(xhr.responseText);
+      }
+      };
+    }
+    </script>
+</form>
+{% endblock%}

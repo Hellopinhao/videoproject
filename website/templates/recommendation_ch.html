@@ -1,0 +1,342 @@
+
+{% extends "base_ch.html" %}
+{% block title %}Recommendation{% endblock%}
+{% block content %}
+<style>.hytPlayerWrap{display:inline-block;position:relative}.hytPlayerWrap.ended::after{content:"";position:absolute;top:0;left:0;bottom:0;right:0;cursor:pointer;background-color:black;background-repeat:no-repeat;background-position:center;background-size:64px 60px;background-image:url(data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgNTEwIDUxMCI+PHBhdGggZD0iTTI1NSAxMDJWMEwxMjcuNSAxMjcuNSAyNTUgMjU1VjE1M2M4NC4xNSAwIDE1MyA2OC44NSAxNTMgMTUzcy02OC44NSAxNTMtMTUzIDE1My0xNTMtNjguODUtMTUzLTE1M0g1MWMwIDExMi4yIDkxLjggMjA0IDIwNCAyMDRzMjA0LTkxLjggMjA0LTIwNC05MS44LTIwNC0yMDQtMjA0eiIgZmlsbD0iI0ZGRiIvPjwvc3ZnPg==)}.hytPlayerWrap.paused::after{content:"";position:absolute;top:0px;left:30px;bottom:0px;right:30px;cursor:pointer;background-color:black;background-repeat:no-repeat;background-position:center;background-size:40px 40px;background-image:url(data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEiIHdpZHRoPSIxNzA2LjY2NyIgaGVpZ2h0PSIxNzA2LjY2NyIgdmlld0JveD0iMCAwIDEyODAgMTI4MCI+PHBhdGggZD0iTTE1Ny42MzUgMi45ODRMMTI2MC45NzkgNjQwIDE1Ny42MzUgMTI3Ny4wMTZ6IiBmaWxsPSIjZmZmIi8+PC9zdmc+)}</style>
+<h3 id="title" style="text-align:center">为你推荐：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </h3>
+<div class="wholeSec">
+<div style="text-align: center">
+<form method="post" class="forms" id="nextForm">
+<input hidden id="pct_watched" name="next"></input>
+<input hidden id ="nextSec" name = "mysrc"></input>
+<div class="videoWrapper">
+<div class="hytPlayerWrapOuter">
+    <div class="hytPlayerWrap" id="hytPlayerWrapID">
+        <div class="myPlayer" id="player" align="center"></div>
+    </div>
+    <div class = "btns">
+        <button type="button" onclick="pop()" id="popUp" disabled="disabled" class="btn btn-primary btn-lg">下一个 ➜</button>
+        <button hidden type="submit" onclick="calPct()" id="nextButton" disabled="disabled">下一个 --></button>
+    </div>
+</div>
+ <div class="loading style-2" id="loader" hidden>
+ <div class="ratePopup">
+      <div class="form-popup" id="popupForm">
+        <form id="ratingForm" class="form-container" name="rateForm">
+          <p2>请选择您对该视频的喜爱程度</p2>
+            <hr>
+            <div class="radio-container">
+                <div class="group1">
+                    <input class="form-check-input" type="radio" name="opt" id="opt1" value="1">
+                    <label class="form-check-label" for="opt1">1 （毫无兴趣）</label>
+                </div>
+                <div class="group2">
+                    <input class="form-check-input" type="radio" name="opt" id="opt2" value="2">
+                    <label class="form-check-label" for="opt2">2（不太喜欢）</label>
+                </div>
+                <div class="group3">
+                    <input class="form-check-input" type="radio" name="opt" id="opt3" value="3">
+                    <label class="form-check-label" for="opt3">3（一般）</label>
+                </div>
+                <div class="group4">
+                    <input class="form-check-input" type="radio" name="opt" id="opt4" value="4">
+                    <label class="form-check-label" for="opt4">4（比较喜欢）</label>
+                </div>
+                <div class="group5">
+                    <input class="form-check-input" type="radio" name="opt" id="opt5" value="5">
+                    <label class="form-check-label" for="opt5">5（非常喜欢）</label>
+                </div>
+            </div>
+          <hr>
+          <button type="button" class="btn btn-light btn-outline-primary" onclick="sendRating()">提交</button>
+        </form>
+        <script>
+            function sendRating() {
+                var ratings = document.getElementsByName("opt");
+                for (var i = 0, length = ratings.length; i < length; i++) {
+                  if (ratings[i].checked) {
+                    rating = ratings[i].value;
+                    break;
+                  }
+                }
+                document.getElementById("like_btn").style.color = "#256EE5";
+                var pay_load;
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", '/rating');
+                xhr.setRequestHeader("Content-Type", "application/json");
+                pay_load = {"rating": rating, "id": '{{video_id}}'};
+                xhr.send(JSON.stringify(pay_load));
+                xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    console.log(xhr.status);
+                    console.log(xhr.responseText);
+                    document.getElementById('nextButton').click();
+                  }};
+            }
+        </script>
+      </div>
+    </div>
+ </div>
+</div>
+</form>
+</div>
+<br>
+<div class = "commentSec" id = "com_con">
+<div class="optionbar">
+  <span title="thumdsup">
+      <button id = "like_btn" class="fabutton" onclick="sendLike()" type="submit">
+        <i class="fa-solid fa-thumbs-up" style='font-size:34px'></i>
+      </button>
+          &nbsp;&nbsp;<span id = "num_like">0</span>&nbsp;&nbsp;
+    </span>
+  <span title="thumdsdown" class="dislike">
+      <button id = "dislike_btn" class="fabutton" onclick="sendDis()" type="submit" >
+        <i class="fa-solid fa-thumbs-down" style='font-size:34px'></i>
+      </button>
+      &nbsp;&nbsp;<span id = "num_dislike">0</span>&nbsp;&nbsp;
+    </span>
+  <span title="star" class="star">
+    <button id = "star_btn" class="fabutton" onclick="sendStar()" type="submit">
+        <i class="fa-solid fa-star" style='font-size:34px'></i>
+    </button>
+      &nbsp;&nbsp;<span id = "num_saved">0</span>&nbsp;&nbsp;
+    </span>
+</div>
+<br>
+<div class="comBox">
+<h4>评论(<span id="num_comments">0</span>):</h4>
+    <div class="textarea-container" >
+    <i class="ipt-arrow"></i>
+    <textarea cols="80" id= "comment" name="comment" rows="5" placeholder="请输入您的评论" class="comments"></textarea>
+    <button type="submit" class="btn btn-light btn-outline-primary" onclick="sendCom()"><span class="submit-text">提交</span></button>
+    </div>
+    <br>
+<ul class="list-group list-group-flush" id="notes">
+  {% for u,c in zip(users, coms) %}
+  <li class="list-group-item">
+    <span class = "com_username">{{u}}:</span>
+    <span class = "com_com">{{ c }}</span>
+  </li>
+  {% endfor %}
+</ul>
+</div>
+</div>
+</div>
+<script>
+    var v_id = '{{video_id}}';
+    document.getElementById("nextSec").value = v_id;
+    document.getElementById("num_comments").innerHTML = {{len_com}};
+    document.getElementById("num_like").innerHTML = {{len_like}};
+    document.getElementById("num_dislike").innerHTML = {{len_dislike}};
+    document.getElementById("num_saved").innerHTML = {{len_saved}};
+</script>
+<script>
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+var player;
+var timer;
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+        height: '600',
+        width: '900',
+        videoId: '{{video_id}}',
+        playerVars: {
+            'autoplay': 1
+            },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+function onPlayerReady(){
+    document.getElementById('nextButton').removeAttribute('disabled');
+    document.getElementById('popUp').removeAttribute('disabled');
+    var pay_load;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/ready');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    pay_load = {"id": '{{video_id}}', "status" : "ready"};
+    xhr.send(JSON.stringify(pay_load));
+    xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        console.log(xhr.status);
+        console.log(xhr.responseText);
+      }
+      };
+
+}
+
+let playerWrap = document.getElementById('hytPlayerWrapID');
+
+function onPlayerStateChange(newState) {
+
+    if (newState.data == 1) {
+        timer = setInterval(record,100);
+        playerWrap.classList.remove("ended");
+        playerWrap.classList.remove("paused");
+    }
+    else if (newState.data == 2) {
+        playerWrap.classList.add("paused");
+        clearInterval(timer);
+        var pct = player.getCurrentTime()/player.getDuration();
+        var pay_load;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/track');
+        xhr.setRequestHeader("Content-Type", "application/json");
+        pay_load = {"pct": pct, "id": '{{video_id}}', "status" : "paused"};
+        xhr.send(JSON.stringify(pay_load));
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+          }};
+    }
+    else if (newState.data == YT.PlayerState.ENDED){
+        playerWrap.classList.add("ended");
+        clearInterval(timer);
+        var pay_load;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/track');
+        xhr.setRequestHeader("Content-Type", "application/json");
+        pay_load = {"pct": 1, "id": '{{video_id}}', "status" : "completed"};
+        xhr.send(JSON.stringify(pay_load));
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+          }
+          };
+        document.getElementById('popUp').click();
+    }
+}
+
+playerWrap.addEventListener("click",function(){let playerState=player.getPlayerState();if(playerState==YT.PlayerState.ENDED){player.seekTo(0);}else if(playerState==YT.PlayerState.PAUSED){player.playVideo();}});
+
+function record(){
+    var percentComplete = player.getCurrentTime()/player.getDuration();
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/track');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    var pay_load = {"pct": percentComplete, "id": '{{video_id}}', "status" : "playing"};
+    xhr.send(JSON.stringify(pay_load));
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        console.log(xhr.status);
+        console.log(xhr.responseText);
+      }};
+}
+
+function calPct(){
+   document.getElementById("pct_watched").value = player.getCurrentTime()/player.getDuration();
+
+}
+
+function pop(){
+    player.stopVideo();
+    document.getElementById("popupForm").style.display = "block";
+    document.getElementById("loader").removeAttribute("hidden");
+    document.getElementById("com_con").style.display = "none";
+    var pay_load;
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", '/ready');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    pay_load = {"id": '{{video_id}}', "status" : "next"};
+    xhr.send(JSON.stringify(pay_load));
+    xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+        console.log(xhr.status);
+        console.log(xhr.responseText);
+      }
+      };
+}
+
+</script>
+<script>
+    function sendLike(){
+        var pay_load;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/feedback');
+        xhr.setRequestHeader("Content-Type", "application/json");
+        pay_load = {"type": 'like', "id": '{{video_id}}', "status" : "1"};
+        xhr.send(JSON.stringify(pay_load));
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            document.getElementById("like_btn").style.color = "#256EE5";
+            document.getElementById("num_like").innerHTML = xhr.responseText;
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+          }
+        };
+    }
+
+    function sendDis(){
+        var pay_load;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/feedback');
+        xhr.setRequestHeader("Content-Type", "application/json");
+        pay_load = {"type": 'dislike', "id": '{{video_id}}', "status" : "1"};
+        xhr.send(JSON.stringify(pay_load));
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            document.getElementById("dislike_btn").style.color = "#256EE5";
+            document.getElementById("num_dislike").innerHTML = xhr.responseText;
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+          }};
+    }
+
+    function sendStar(){
+        var pay_load;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/feedback');
+        xhr.setRequestHeader("Content-Type", "application/json");
+        pay_load = {"type": 'save', "id": '{{video_id}}', "status" : "1"};
+        xhr.send(JSON.stringify(pay_load));
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            var star = document.getElementById("star_btn")
+            star.style.color = "#256EE5";
+            document.getElementById("num_saved").innerHTML = xhr.responseText;
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+          }};
+    }
+
+    function sendCom(){
+        var pay_load;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/feedback');
+        xhr.setRequestHeader("Content-Type", "application/json");
+        var comment = document.getElementById("comment").value
+        pay_load = {"type": 'comments', "id": '{{video_id}}', "comment" : comment};
+        xhr.send(JSON.stringify(pay_load));
+        xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            document.getElementById("comment").value = "";
+            resp = JSON.parse(xhr.response);
+            document.getElementById("num_comments").innerHTML = resp.len_com;
+            const user = resp.username + ": "
+            var list = document.getElementById('notes');
+            var entry = document.createElement('li');
+            entry.classList.add("list-group-item");
+            var username = document.createElement('span');
+            var com = document.createElement('span');
+            username.classList.add("com_username");
+            username.appendChild(document.createTextNode(user));
+            com.classList.add("com_com");
+            com.appendChild(document.createTextNode(resp.comment));
+            entry.appendChild(username)
+            entry.appendChild(com)
+            list.appendChild(entry);
+            console.log(xhr.status);
+            console.log(xhr.responseText);
+          }};
+    }
+</script>
+
+
+{% endblock%}
