@@ -14,7 +14,7 @@ from flask import session
 auth = Blueprint('auth', __name__)
 # ytb_data = pd.read_excel("/home/vidRepVer2/.local/videoProject/YouTube videos.xlsx")
 # ytb_data = pd.read_excel("/home/vidRepVer2/.local/videoProject/YouTube videos-with tags.xlsx")
-ytb_data = pd.read_excel("/root/experiment/videoproject/Douyin_videos.xlsx")
+ytb_data = pd.read_excel("/home/vidRepVer2/.local/videoProject/Douyin videos.xlsx")
 #total_duration = {timedelta(seconds=0)}
 total_duration = {}
 # status variables
@@ -43,7 +43,6 @@ rec_round = {}
 vid_count = {}
 non_res_pai_ind = {}
 ready_time  = {}
-first_playing_time = {}
 next_time = {}
 actual_browsing_time = {}
 ind_browsing_time = {}
@@ -200,7 +199,7 @@ def get_pref(username, rnd):
             flash("No preferences indicated!", category="error")
             return redirect(url_for("views.home"))
     else:
-        pre_check = preference.query.filter_by(username=username).limit(2)[1]
+        pre_check = preference.query.filter_by(username=username).limit(2)[-1]
         if pre_check:
             # load and sort preferences
             dic = {
@@ -393,22 +392,14 @@ def track_length():
         return "Null. Do not record."
     if info['status'] == 'playing':
         # test 250111 next line
-        session['last_state'] = 0
         pause[username] = session.get('pause')
-        if session.get('first_playing_time') == 0:
-            session['first_playing_time'] = datetime.now().isoformat()
-            print("first time playing {}", session['first_playing_time'])
-            first_playing_time[username] = session['first_playing_time']
 
         if pause[username] != 0:
             print(info['time'])
             # test 250118 next two lines
             pause_duration[username] = session.get('pause_duration')
-            #session['pause_duration'] = pause_duration[username] + (info['time'] - pause[username])/1000
-            print("pinhao_debug: pause: {}".format(pause[username]))
-            session['pause_duration'] = pause_duration[username] + (datetime.fromisoformat(datetime.now().isoformat()) - datetime.fromisoformat(pause[username])).total_seconds()
-            #pause_duration[username] += (info['time'] - pause[username])/1000
-            pause_duration[username] = session['pause_duration']
+            session['pause_duration'] = pause_duration[username] + (info['time'] - pause[username])/1000
+            pause_duration[username] += (info['time'] - pause[username])/1000
             # test 250111 next two lines
             session['pause'] = 0
             #pause[username] = session.get('pause')
@@ -417,15 +408,12 @@ def track_length():
         new_act = activity(user_id = id, username = username,ip=ip, video_id=info['id'], percent_watched=info['pct'], group = int(exp_group[username][-1]))
     elif info['status'] == 'paused':
         # test 250111 next two lines
-        #session['pause'] = info['time']
-        session['last_state'] = 1
-        session['pause'] = datetime.now().isoformat()
-        pause[username] = session['pause']
-        #pause[username] = info['time']
+        session['pause'] = info['time']
+
+        pause[username] = info['time']
         print(pause[username])
         new_act = activity(user_id=id, username=username, ip=ip, video_id=info['id'], percent_watched=info['pct'], paused = 1, group = int(exp_group[username][-1]))
     else:
-        session['last_state'] = 0
         new_act = activity(user_id=id, username=username, ip=ip, video_id=info['id'], percent_watched=info['pct'], finished = 1, group = int(exp_group[username][-1]))
 
     try:
@@ -548,32 +536,23 @@ def recommend(optionNum):
             vid_count[username] = session.get('vid_count')
             #vid_count[username] +=1
             # test 250111 next few lines
-            next_time_data = session.get('next_time', {})
-            next_time[username] = datetime.now()
+            next_time_data = session.get('next_time')
             time_str_next = next_time_data.get(username)
-            #if time_str_next is None:
-            #    next_time[username] = datetime.now()
-            #else:
-            #    next_time[username] = datetime.fromisoformat(time_str_next)
             print('next time')
             print(time_str_next)
+            if time_str_next is None:
+                next_time[username] = datetime.now()
+            else:
+                next_time[username] = datetime.fromisoformat(time_str_next)
 
             # test 250118 next two lines
             time_str_ready = session.get('ready_time')
-            #ready_time[username] = datetime.fromisoformat(time_str_ready)
+            ready_time[username] = datetime.fromisoformat(time_str_ready)
             # test 250118 next line
             pause_duration[username] = session.get('pause_duration')
             print('0214 pause_duration')
             print(pause_duration[username])
-            #actual_time = (next_time[username] - ready_time[username]).total_seconds() - pause_duration[username]
-            if session.get('last_state') == 1:
-                session['pause_duration'] = pause_duration[username] + (datetime.fromisoformat(datetime.now().isoformat()) - datetime.fromisoformat(pause[username])).total_seconds()
-                pause_duration[username] = session['pause_duration']
-            if session.get('first_playing_time') == 0:
-                actual_time = 0
-            else:
-                actual_time = (next_time[username] - datetime.fromisoformat(session.get('first_playing_time'))).total_seconds() - pause_duration[username]
-            print("pinhao_debug: actual_time: {} next_time: {} ready_time: {} pause_duration: {} first_playing_time: {}".format(actual_time, next_time[username], ready_time[username], pause_duration[username], session.get('first_playing_time')))
+            actual_time = (next_time[username] - ready_time[username]).total_seconds() - pause_duration[username]
             print('act time', actual_time)
             ind_browsing_time[username] = actual_time
             # test 250118 next two lines
@@ -582,8 +561,6 @@ def recommend(optionNum):
             actual_browsing_time[username] += actual_time
             # test 250111 next two lines
             session['pause'] = 0
-            session['last_state'] = 0
-            session['first_playing_time'] = 0
             #pause[username] = session.get('pause')
             pause[username] = 0
             # test 250118 next two lines
@@ -829,8 +806,7 @@ def recommend(optionNum):
             # test 250111 next few lines
             next_time_data = session.get('next_time')
             time_str_next = next_time_data.get(username)
-            #next_time[username] = datetime.fromisoformat(time_str_next)
-            next_time[username] = datetime.now()
+            next_time[username] = datetime.fromisoformat(time_str_next)
 
             # test 250118 next two lines
             time_str_ready = session.get('ready_time')
@@ -839,15 +815,7 @@ def recommend(optionNum):
             pause_duration[username] = session.get('pause_duration')
             print('0214 pause_duration')
             print(pause_duration[username])
-            if session.get('last_state') == 1:
-                session['pause_duration'] = pause_duration[username] + (datetime.fromisoformat(datetime.now().isoformat()) - datetime.fromisoformat(pause[username])).total_seconds()
-                pause_duration[username] = session['pause_duration']
-            if session.get('first_playing_time') == 0:
-                actual_time = 0
-            else:
-                actual_time = (next_time[username] - datetime.fromisoformat(session.get('first_playing_time'))).total_seconds() - pause_duration[username]
-            print("pinhao_debug: actual_time 2: {} next_time: {} ready_time: {} pause_duration: {} first_playing_time: {}".format(actual_time, next_time[username], ready_time[username], pause_duration[username], session.get('first_playing_time')))
-            #actual_time = (next_time[username] - ready_time[username]).total_seconds() - pause_duration[username]
+            actual_time = (next_time[username] - ready_time[username]).total_seconds() - pause_duration[username]
             ind_browsing_time[username] = actual_time
             # test 250118 next two lines
             actual_browsing_time[username] = session.get('actual_browsing_time')
@@ -857,8 +825,6 @@ def recommend(optionNum):
             session['pause'] = 0
             #pause[username] = session.get('pause')
             pause[username] = 0
-            session['last_state'] = 0
-            session['first_playing_time'] = 0
             # test 250118 next two lines
             session['pause_duration'] = 0
             #pause_duration[username] = session.get('pause_duration')
@@ -1511,13 +1477,9 @@ def record_ready():
 
     print('*****************ready*************'+username)
     print(info['status'])
-    print("pinhao_debug: info status: {}".format(info['status']))
     if info['status'] == 'ready':
         # test 250118 next three lines
         session['ready_time'] = datetime.now().isoformat()
-        print("pinhao_debug: ready_time: {}".format(session['ready_time']))
-
-        #session['first_playing_time'] = 0
         #ready_time[username] = session.get('ready_time')
         ready_time[username] = datetime.now()
         print("record ready", ready_time[username])
@@ -1671,7 +1633,6 @@ def welcome(group):
     session['cat1_end'] = 0
     session['cat2_end'] = 0
     session['count_dic'] = {}
-    session['first_playing_time'] = 0
     #rec_round[username] = session.get('rec_round', 0)
 
     option[username] = 'option1'
