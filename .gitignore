@@ -1,0 +1,9 @@
+*.mp4
+*.zip
+__MACOSX
+*.db
+gunicorn_start.sh
+.DS_Store
+log
+*.diff
+__pycache__
