@@ -1,6 +1,6 @@
 import flask
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
-from .models import note, activity, user, preference, collection, information, browse, rating, btime
+from .models import note, activity, user, preference, collection, information, browse, rating, btime, watch
 from . import db
 import pandas as pd
 from datetime import datetime, timezone
@@ -14,7 +14,7 @@ from flask import session
 auth = Blueprint('auth', __name__)
 # ytb_data = pd.read_excel("/home/vidRepVer2/.local/videoProject/YouTube videos.xlsx")
 # ytb_data = pd.read_excel("/home/vidRepVer2/.local/videoProject/YouTube videos-with tags.xlsx")
-ytb_data = pd.read_excel("/home/vidRepVer2/.local/videoProject/Douyin videos.xlsx")
+ytb_data = pd.read_excel("/root/experiment/videoproject/Douyin_videos.xlsx")
 #total_duration = {timedelta(seconds=0)}
 total_duration = {}
 # status variables
@@ -75,6 +75,8 @@ preference_time = {}
 preference_time2 = {}
 report_time = {}
 r1_bt = {}
+pct_data = {}
+first_playing_time = {}
 #parameters to change
 non_res_pct = 0.3
 non_res_pai = 2
@@ -199,7 +201,7 @@ def get_pref(username, rnd):
             flash("No preferences indicated!", category="error")
             return redirect(url_for("views.home"))
     else:
-        pre_check = preference.query.filter_by(username=username).limit(2)[-1]
+        pre_check = preference.query.filter_by(username=username).limit(2)[1]
         if pre_check:
             # load and sort preferences
             dic = {
@@ -223,6 +225,9 @@ def get_pref(username, rnd):
             cat1 = sorted_pref[0]
             cat2 = sorted_pref[1]
             cat3 = sorted_pref[2]
+            session['cat1_sec_name'] = cat1
+            session['cat2_sec_name'] = cat2
+            session['cat3_sec_name'] = cat3
             # read videos from Youtube video data
             df1 = ytb_data[ytb_data['category'] == cat1]
             df2 = ytb_data[ytb_data['category'] == cat2]
@@ -309,7 +314,21 @@ def update(username,cur_cat, cur_id):
         # test 250112
         rnd1_vids[username] = session.get('rnd1_vids')
 
-        cur_index = rnd1_vids[username].index(cur_id)
+        print("pinhao_debug: update, cur_id:{}, rnd1_vids[username]:{}".format(cur_id, rnd1_vids[username]))
+        try:
+            cur_index = rnd1_vids[username].index(cur_id)
+        except:
+            print("error! update, cur_cat:{}, round:{}".format(cur_cat, session.get('rec_round')))
+            rnd2_vids[username] = session.get('rnd2_vids')
+            cur_index = rnd2_vids[username].index(cur_id)
+            if cur_index == len(rnd2_vids[username]) - 1:
+                # test 250110 next line
+                session['cat2_end'] = 1
+                cat2_end[username] = 1
+            session['cat1_end'] = 1
+            cat1_end[username] = 1
+            return 'next'
+
         if cur_index == len(rnd1_vids[username]) - 1:
             # test 250110 next line
             session['cat1_end'] = 1
@@ -320,6 +339,7 @@ def update(username,cur_cat, cur_id):
         # test 250112
         rnd2_vids[username] = session.get('rnd2_vids')
 
+        print("pinhao_debug: update, cur_id:{}, rnd2_vids[username]:{}".format(cur_id, rnd2_vids[username]))
         cur_index = rnd2_vids[username].index(cur_id)
         if cur_index == len(rnd2_vids[username]) - 1:
             # test 250110 next line
@@ -333,7 +353,18 @@ def get_next_id(username,cur_cat,cur_vid):
         # test 250112
         rnd1_vids[username] = session.get('rnd1_vids')
 
-        cur_index = rnd1_vids[username].index(cur_vid)
+        print("pinhao_debug: get_next_id, cur_vid:{}, rnd1_vids[username]:{}".format(cur_vid, rnd1_vids[username]))
+        try:
+            cur_index = rnd1_vids[username].index(cur_vid)
+        except:
+            print("error! get_next_id, cur_cat:{}, round:{}".format(cur_cat, session.get('rec_round')))
+            rnd2_vids[username] = session.get('rnd2_vids')
+            cur_index = rnd2_vids[username].index(cur_vid)
+            next_id =rnd2_vids[username][cur_index+1]
+            if cur_index > 0:
+                pre_cat2[username] = cur_vid
+            return next_id
+
         next_id = rnd1_vids[username][cur_index+1]
         if cur_index > 0:
             pre_cat1[username] = cur_vid
@@ -342,6 +373,7 @@ def get_next_id(username,cur_cat,cur_vid):
         # test 250112
         rnd2_vids[username] = session.get('rnd2_vids')
 
+        print("pinhao_debug: get_next_id, cur_vid:{}, rnd2_vids[username]:{}".format(cur_vid, rnd2_vids[username]))
         cur_index = rnd2_vids[username].index(cur_vid)
         next_id =rnd2_vids[username][cur_index+1]
         if cur_index > 0:
@@ -354,23 +386,30 @@ def get_prev_id(username,cur_cat, cur_id):
         # test 250112
         rnd1_vids[username] = session.get('rnd1_vids')
 
-        cur_index = rnd1_vids[username].index(cur_id)
-        if cur_index == 0:
-            return 'no prev'
+        if cur_id in rnd1_vids[username]:
+            cur_index = rnd1_vids[username].index(cur_id)
+            if cur_index == 0:
+                return 'no prev'
+            else:
+                prev_id = rnd1_vids[username][cur_index-1]
+                return prev_id
         else:
-            prev_id = rnd1_vids[username][cur_index-1]
-            return prev_id
+            print("error! rnd1 cur_id: {} rnd1_vids: {}", cur_id, rnd1_vids[username])
+            return 'no prev'
     elif cur_cat == 'cat2':
         # test 250112
         rnd2_vids[username] = session.get('rnd2_vids')
 
-        cur_index = rnd2_vids[username].index(cur_id)
-        if cur_index == 0:
-            return 'no prev'
+        if cur_id in rnd2_vids[username]:
+            cur_index = rnd2_vids[username].index(cur_id)
+            if cur_index == 0:
+                return 'no prev'
+            else:
+                prev_id = rnd2_vids[username][cur_index - 1]
+                return prev_id
         else:
-            prev_id = rnd2_vids[username][cur_index - 1]
-            return prev_id
-
+            print("error! rnd2 cur_id: {} rnd1_vids: {}", cur_id, rnd2_vids[username])
+            return 'no prev'
 
 @auth.route('/track', methods= ['GET', 'POST'])
 def track_length():
@@ -387,19 +426,28 @@ def track_length():
     # test 250118 next line
     exp_group[username] = session.get('exp_group')
 
+    pct_data[username] = info['pct']
+    print("pinhao_debug: pct:{}".format(pct_data[username]))
+
     print(info['status'])
     if info['pct'] is None:
         return "Null. Do not record."
     if info['status'] == 'playing':
         # test 250111 next line
+        session['last_state'] = 0
         pause[username] = session.get('pause')
+        if first_playing_time[username] == 0 and info['pct'] < 0.01:
+            first_playing_time[username] = datetime.now()
+            print("pinhao_debug: first time playing: {}".format(first_playing_time[username]))
 
         if pause[username] != 0:
             print(info['time'])
             # test 250118 next two lines
             pause_duration[username] = session.get('pause_duration')
-            session['pause_duration'] = pause_duration[username] + (info['time'] - pause[username])/1000
-            pause_duration[username] += (info['time'] - pause[username])/1000
+            #session['pause_duration'] = pause_duration[username] + (info['time'] - pause[username])/1000
+            session['pause_duration'] = pause_duration[username] + (datetime.fromisoformat(datetime.now().isoformat()) - datetime.fromisoformat(pause[username])).total_seconds()
+            #pause_duration[username] += (info['time'] - pause[username])/1000
+            pause_duration[username] = session['pause_duration']
             # test 250111 next two lines
             session['pause'] = 0
             #pause[username] = session.get('pause')
@@ -408,9 +456,11 @@ def track_length():
         new_act = activity(user_id = id, username = username,ip=ip, video_id=info['id'], percent_watched=info['pct'], group = int(exp_group[username][-1]))
     elif info['status'] == 'paused':
         # test 250111 next two lines
-        session['pause'] = info['time']
-
-        pause[username] = info['time']
+        #session['pause'] = info['time']
+        session['last_state'] = 1
+        session['pause'] = datetime.now().isoformat()
+        pause[username] = session['pause']
+        #pause[username] = info['time']
         print(pause[username])
         new_act = activity(user_id=id, username=username, ip=ip, video_id=info['id'], percent_watched=info['pct'], paused = 1, group = int(exp_group[username][-1]))
     else:
@@ -537,23 +587,59 @@ def recommend(optionNum):
             #vid_count[username] +=1
             # test 250111 next few lines
             next_time_data = session.get('next_time')
-            time_str_next = next_time_data.get(username)
-            print('next time')
-            print(time_str_next)
-            if time_str_next is None:
-                next_time[username] = datetime.now()
-            else:
-                next_time[username] = datetime.fromisoformat(time_str_next)
+            next_time[username] = datetime.now()
+            #time_str_next = next_time_data.get(username)
+            print('next time:{}'.format(next_time[username]))
 
             # test 250118 next two lines
-            time_str_ready = session.get('ready_time')
-            ready_time[username] = datetime.fromisoformat(time_str_ready)
-            # test 250118 next line
             pause_duration[username] = session.get('pause_duration')
             print('0214 pause_duration')
             print(pause_duration[username])
-            actual_time = (next_time[username] - ready_time[username]).total_seconds() - pause_duration[username]
-            print('act time', actual_time)
+            if session.get('last_state') == 1:
+                try:
+                    session['pause_duration'] = pause_duration[username] + (datetime.fromisoformat(datetime.now().isoformat()) - datetime.fromisoformat(pause[username])).total_seconds()
+                except:
+                    print("error! pause[username]:{}".format(pause[username]))
+                pause_duration[username] = session['pause_duration']
+            if first_playing_time[username] == 0:
+                if pct_data[username] == 0:
+                    print("pinhao_debug: pct is 0, set actual_time to 0")
+                    actual_time = 0
+                else:
+                    print("pinhao_debug: compute actual time based on ready time")
+                    actual_time = (next_time[username] - ready_time[username]).total_seconds() - pause_duration[username]
+            else:
+                print("pinhao_debug: compute actual time based on first playing time")
+                actual_time = (next_time[username] - first_playing_time[username]).total_seconds() - pause_duration[username]
+            
+            vedio_id = int(cur_id)
+            cur_group_id = int(exp_group[username][-1])
+            cur_cat_name = 'null'
+            if int(session.get('rec_round')) == 1:
+                if vedio_id in session.get('cat1_first'):
+                    cur_cat_name = category=session.get('cat1_name')
+                elif vedio_id in session.get('cat2_first'):
+                    cur_cat_name = category=session.get('cat2_name')
+                elif vedio_id in session.get('cat3_first'):
+                    cur_cat_name = category=session.get('cat3_name')
+            elif int(session.get('rec_round')) == 2:
+                if vedio_id in session.get('cat1_sec_fin'):
+                    cur_cat_name = category=session.get('cat1_sec_name')
+                elif vedio_id in session.get('cat2_sec_fin'):
+                    cur_cat_name = category=session.get('cat2_sec_name')
+                elif vedio_id in session.get('cat3_sec_fin'):
+                    cur_cat_name = category=session.get('cat3_sec_name')
+            
+            vedio_time = ytb_data[ytb_data['id'] == int(cur_id)]
+            vedio_time = float(vedio_time['duration'].to_list()[0])
+            watch_percent = actual_time / vedio_time
+            watch_record = watch(group_id=cur_group_id, user_id=int(current_user.id), username=current_user.username, category=cur_cat_name, video_id=cur_id, watch_time=actual_time, vedio_time=vedio_time, percent=watch_percent, turn=int(session.get('rec_round')))
+            try:
+                db.session.add(watch_record)
+                db.session.commit()
+            except:
+                print("error! fail to add watch record")
+            print("pinhao_debug: actual_time: {} next_time: {} ready_time: {} pause_duration: {} first_playing_time: {} cur_id: {} cat1_first: {} cur_cat_name:{} turn: {} user_id:{} username:{} group_id:{} vedio_time: {} watch_percent: {}".format(actual_time, next_time[username], ready_time[username], pause_duration[username], first_playing_time[username], cur_id, session.get('cat1_first'), cur_cat_name, session.get('rec_round'), current_user.id, username, cur_group_id, vedio_time, watch_percent))
             ind_browsing_time[username] = actual_time
             # test 250118 next two lines
             actual_browsing_time[username] = session.get('actual_browsing_time')
@@ -561,6 +647,10 @@ def recommend(optionNum):
             actual_browsing_time[username] += actual_time
             # test 250111 next two lines
             session['pause'] = 0
+            session['last_state'] = 0
+            first_playing_time[username] = 0
+            pct_data[username] = 0
+            ready_time[username] = datetime.now()
             #pause[username] = session.get('pause')
             pause[username] = 0
             # test 250118 next two lines
@@ -728,7 +818,6 @@ def recommend(optionNum):
                 # test!!!
                 cur_id = int(cur_id)
                 next_id = get_next_id(username, current_cat[username], cur_id)
-                print(next_id)
                 df_dur = ytb_data[ytb_data['id'] == next_id]
                 duration = df_dur['duration'].to_list()[0]
                 # test 250110 next few lines
@@ -804,18 +893,25 @@ def recommend(optionNum):
             vid_count[username] = session.get('vid_count')
             #vid_count[username] -= 1
             # test 250111 next few lines
-            next_time_data = session.get('next_time')
-            time_str_next = next_time_data.get(username)
-            next_time[username] = datetime.fromisoformat(time_str_next)
+            #next_time_data = session.get('next_time')
+            #time_str_next = next_time_data.get(username)
+            #next_time[username] = datetime.fromisoformat(time_str_next)
+            next_time[username] = datetime.now()
 
             # test 250118 next two lines
-            time_str_ready = session.get('ready_time')
-            ready_time[username] = datetime.fromisoformat(time_str_ready)
             # test 250118 next line
             pause_duration[username] = session.get('pause_duration')
             print('0214 pause_duration')
             print(pause_duration[username])
+            if session.get('last_state') == 1:
+                try:
+                    session['pause_duration'] = pause_duration[username] + (datetime.fromisoformat(datetime.now().isoformat()) - datetime.fromisoformat(pause[username])).total_seconds()
+                except:
+                    print("error! pause[username]:{}".format(pause[username]))
+                pause_duration[username] = session['pause_duration']
+            
             actual_time = (next_time[username] - ready_time[username]).total_seconds() - pause_duration[username]
+            print("pinhao_debug 2: actual_time: {} next_time: {} ready_time: {} pause_duration: {} first_playing_time: {} cur_id: {} cat1_first: {}".format(actual_time, next_time[username], session.get('ready_time'), pause_duration[username], first_playing_time[username], cur_id, session.get('cat1_first')))
             ind_browsing_time[username] = actual_time
             # test 250118 next two lines
             actual_browsing_time[username] = session.get('actual_browsing_time')
@@ -825,6 +921,8 @@ def recommend(optionNum):
             session['pause'] = 0
             #pause[username] = session.get('pause')
             pause[username] = 0
+            session['last_state'] = 0
+            first_playing_time[username] = 0
             # test 250118 next two lines
             session['pause_duration'] = 0
             #pause_duration[username] = session.get('pause_duration')
@@ -1475,12 +1573,12 @@ def record_ready():
     # test 250118 next line
     exp_group[username] = session.get('exp_group')
 
-    print('*****************ready*************'+username)
+    print('*****************ready*************')
     print(info['status'])
     if info['status'] == 'ready':
         # test 250118 next three lines
-        session['ready_time'] = datetime.now().isoformat()
-        #ready_time[username] = session.get('ready_time')
+        session['ready_time'] = datetime.now()
+
         ready_time[username] = datetime.now()
         print("record ready", ready_time[username])
     elif info['status'] == 'pageReady':
@@ -1555,8 +1653,12 @@ def record_ready():
             # test 250111 next few lines
             report_time_data = session.get('report_time')
             time_str_report = report_time_data.get(username)
-            dt_report = datetime.fromisoformat(time_str_report)
-            sec_diff = (datetime.now() - dt_report).total_seconds()
+            try:
+                dt_report = datetime.fromisoformat(time_str_report)
+                sec_diff = (datetime.now() - dt_report).total_seconds()
+            except:
+                print("error! time_str_report:{}".format(time_str_report))
+                sec_diff = 0
 
         else:
             #sec_diff = (datetime.now() - preference_time2[username]).total_seconds()
@@ -1633,6 +1735,7 @@ def welcome(group):
     session['cat1_end'] = 0
     session['cat2_end'] = 0
     session['count_dic'] = {}
+    session['last_state'] = 0
     #rec_round[username] = session.get('rec_round', 0)
 
     option[username] = 'option1'
@@ -1641,6 +1744,8 @@ def welcome(group):
     total_duration[username] = timedelta(seconds=0)
     cat1_end[username] = 0
     cat2_end[username] = 0
+    pct_data[username] = 0
+    first_playing_time[username] = 0
     #count_dic[username] = {}
     if request.method == 'POST':
         pre_check = preference.query.filter_by(username=username).first()
@@ -1714,13 +1819,6 @@ def show_report(content):
     cat1_encoded = category_mapping.get(cat1_name[username])  # 如果没有找到对应映射，则保留原名
     cat2_encoded = category_mapping.get(cat2_name[username])
     cat3_encoded = category_mapping.get(cat3_name[username])
-
-    # return render_template("report_new.html", user = current_user, cat1 = cat1_name[username], cat1_time = "{:.2f}".format(cat1_dur[username]), \
-    #                       cat2 = cat2_name[username], cat2_time = "{:.2f}".format(cat2_dur[username]), cat3 = cat3_name[username], cat3_time = "{:.2f}".format(cat3_dur[username]), \
-    #                       cat1_per = "{:.2f}".format(cat1_dur[username]/tot_time*100), \
-    #                       cat2_per = "{:.2f}".format(cat2_dur[username]/tot_time*100), \
-    #                       cat3_per = "{:.2f}".format(cat3_dur[username]/tot_time*100), tot_min = "{:.2f}".format(tot_time/60), report_type = report_type, \
-    #                       w1 = sorted_words[0], w2 = sorted_words[1],w3 = sorted_words[2], w4 = sorted_words[3],w5 = sorted_words[4])
 
     # test
     tot_min, spe_seconds = divmod(int(tot_time), 60)
