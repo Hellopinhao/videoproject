@@ -180,7 +180,7 @@
 
         // 动态设置视频源
         const sourceElement = document.createElement('source');
-        sourceElement.src = `https://vidrepver2.pythonanywhere.com/static/DouyinVideos/${videoId}.mp4`;  // 根据 videoId 动态设置视频路径
+        sourceElement.src = `/static/DouyinVideos/${videoId}.mp4`;  // 根据 videoId 动态设置视频路径
         sourceElement.type = 'video/mp4';
 
         videoElement.appendChild(sourceElement);
